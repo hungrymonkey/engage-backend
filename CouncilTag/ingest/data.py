@@ -79,16 +79,18 @@ def process_actions_section(body):
 
 
 def process_agenda_item(session, prefix, href):
-    agenda_item = dict()
     agenda_item_url = prefix + href
     query = href.split('?')
     query_params = query[1].split("&")
     if query[0] != 'Detail_LegiFile.aspx':
         return
     r = session.get(agenda_item_url)
-    agenda_item_soup = BeautifulSoup(r.text, 'html.parser')
-
     params = parse_query_params(query_params)
+    return parse_agenda_item(r.text, params, agenda_item_url)
+
+def parse_agenda_item( text, params, agenda_item_url):
+    agenda_item_soup = BeautifulSoup(text, 'html.parser')
+    agenda_item = dict()
     ID = params['ID']
     MeetingID = params['MeetingID']
     Title = agenda_item_soup.find(
